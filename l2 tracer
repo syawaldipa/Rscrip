@@ -1,0 +1,32 @@
+# install.packages('ggplot2')
+library(ggplot2)
+# install.packages('scales')
+library(scales)
+
+# install.packages('doBy')
+library(doBy)
+
+#########################
+# Rate trace processing #
+#########################
+data = read.table("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/L2-different-interest1000-best-route-600s.txt", header=T)
+data$Node = factor(data$Node)
+data$Kilobits <- data$Kilobytes * 8
+data$Type = factor(data$Type)
+
+# combine stats from all faces
+data.combined = summaryBy(. ~ Time + Node + Type, data=data, FUN=sum)
+
+data.manado = subset (data.combined, Node == "manado")
+
+# graph rates on the root nodes in Packets
+g.manado <- ggplot(data.manado) +
+  geom_point(aes (x=Time, y=Kilobits.sum, color=Type), size=2) +
+  geom_line(aes (x=Time, y=Kilobits.sum, color=Type), size=0.5) +
+  ylab("Rate [Kbits/s]")
+
+print(g.manado)
+
+png("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/L2-different-interest1000-best-route-600s-manado", width=1280, height=720)
+print(g.manado)
+retval <- dev.off()
