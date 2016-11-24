@@ -1,0 +1,24 @@
+# install.packages ('ggplot2')
+library(ggplot2)
+## # install.packages ('scales')
+## library (scales)
+
+#########################
+# Rate trace processing #
+#########################
+data = read.table("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/L2-different-interest1000-best-route-600s.txt", header=T)
+data$Node = factor(data$Node)
+data$Kilobits <- data$Kilobytes * 8
+data$Type = factor(data$Type)
+
+# graph rates on all nodes in Kilobits
+g.all <- ggplot(data, aes(x=Time, y=Kilobits, color=Type)) +
+  geom_point(size=2) +
+  geom_line() +
+  ylab("Packet drop rate [Kbits/s]") +
+  facet_wrap(~ Node) +
+  theme_bw()
+
+png("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/l2-rate-tracer.png", width=800, height=500)
+print(g.all)
+x = dev.off()
