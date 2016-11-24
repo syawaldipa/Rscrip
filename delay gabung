@@ -1,0 +1,32 @@
+# install.packages('ggplot2')
+library(ggplot2)
+# install.packages('scales')
+library(scales)
+
+# install.packages('doBy')
+library(doBy)
+
+#########################
+# Rate trace processing #
+#########################
+data = read.table("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/DELAY-different-interest1000-best-route-600s.txt", header=T)
+data$Node = factor(data$Node)
+data$AppId <- factor(data$AppId)
+data$DelayS <- data$DelayS
+data$Type = factor(data$Type)
+
+# exlude irrelevant types
+data = subset(data, Type %in% c("LastDelay"))
+
+
+# graph rates on all nodes in Kilobits
+g.all <- ggplot(data, aes(x=Time, y=DelayS, color=Type)) +
+  geom_point(size=2) +
+  geom_line() +
+  ylab("rate [Kbits/s]") +
+  facet_wrap(~ Node) +
+  theme_bw()
+
+png("/home/ardi/R/ndn-multi-forwarding-strategy-inherent-per-prefix-bestroute-1000/DELAY-different-interest1000-best-route-600s-LastDelay", width=1280, height=720)
+print(g.all)
+retval <- dev.off()
