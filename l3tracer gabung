@@ -25,6 +25,7 @@ data.combined = summaryBy(. ~ Time + Node + Type, data=data, FUN=sum)
 # graph rates on all nodes in Kilobits
 g.all <- ggplot(data.combined) +
   geom_point(aes (x=Time, y=Kilobits.sum, color=Type), size=1) +
+  geom_line(aes (x=Time, y=Kilobits.sum, color=Type), size=0.5) +
   ylab("Rate [Kbits/s]") +
   facet_wrap(~ Node)
 
